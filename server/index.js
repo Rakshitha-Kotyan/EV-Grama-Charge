@@ -9,6 +9,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/hosts', require('./routes/hosts'));
+
 // Test route
 app.get('/', (req, res) => {
   res.send('EV-Grama Charge API is running ⚡');
