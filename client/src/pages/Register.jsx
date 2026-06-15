@@ -33,7 +33,7 @@ export default function Register() {
       // Storing JWT token in localStorage so it persists across page refreshes
       localStorage.setItem("user", JSON.stringify(res.data.user));
       // Storing user info so we can display name, role etc anywhere in the app
-      navigate("/map");
+      navigate(res.data.user.role === "host" ? "/host-dashboard" : "/map");
       // Redirect to map page after successful register
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");

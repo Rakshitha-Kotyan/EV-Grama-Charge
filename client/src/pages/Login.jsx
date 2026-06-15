@@ -20,7 +20,7 @@ export default function Login() {
       const res = await api.post("/auth/login", formData);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      navigate("/map");
+     navigate(res.data.user.role === "host" ? "/host-dashboard" : "/map");
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
     } finally {
