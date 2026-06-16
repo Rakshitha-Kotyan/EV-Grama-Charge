@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Map from "./pages/Map";
 import HostDashboard from "./pages/HostDashboard";
+import MyBookings from "./pages/MyBookings";
+
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -29,6 +31,11 @@ export default function App() {
           <Route path="/host-dashboard" element={
             <PrivateRoute>
               <HostDashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/my-bookings" element={
+            <PrivateRoute>
+              <MyBookings />
             </PrivateRoute>
           } />
         </Routes>

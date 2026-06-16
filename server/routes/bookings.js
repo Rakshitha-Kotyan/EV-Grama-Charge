@@ -64,9 +64,8 @@ router.get('/host/:hostId', async (req, res) => {
   try {
     const bookings = await Booking.find({ host: req.params.hostId })
       .populate('rider', 'name email')
+      // ☝️ This already populates rider name and email — good!
       .sort({ createdAt: -1 });
-      // ☝️ Host sees who booked their socket
-
     res.json(bookings);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });

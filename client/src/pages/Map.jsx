@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
+import BookingModal from "../components/BookingModal";
 import api from "../utils/api";
 
 // Map container style — fills the full screen
@@ -30,6 +31,9 @@ export default function Map() {
   const [hosts, setHosts] = useState([]);
   const [selectedHost, setSelectedHost] = useState(null);
   const [userLocation, setUserLocation] = useState(defaultCenter);
+  const [bookingHost, setBookingHost] = useState(null);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+// ☝️ bookingHost = host selected for booking, triggers modal to open
 
   // Fetch all available hosts from backend when page loads
   useEffect(() => {
@@ -80,24 +84,33 @@ export default function Map() {
     <div className="relative w-full h-screen">
 
       {/* Top Navbar */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-dark/90 backdrop-blur-sm px-6 py-4 flex justify-between items-center border-b border-border">
-        <h1 className="text-primary font-bold text-xl">⚡ EV-Grama Charge</h1>
-        <div className="flex gap-3 items-center">
-          <span className="text-secondary text-sm font-medium">
-            {hosts.length} charging points nearby
-          </span>
-          <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("user");
-              window.location.href = "/login";
-            }}
-            className="bg-border text-gray-300 px-3 py-1 rounded-lg text-sm hover:bg-red-500/20 hover:text-red-400 transition-all"
-          >
-            Logout
-          </button>
+        <div className="absolute top-0 left-0 right-0 z-10 bg-dark/90 backdrop-blur-sm px-6 py-4 flex justify-between items-center border-b border-border">
+          <h1 className="text-primary font-bold text-xl">⚡ EV-Grama Charge</h1>
+          <div className="flex gap-3 items-center">
+            <span className="text-secondary text-sm font-medium">
+              {hosts.length} charging points nearby
+            </span>
+
+            {/* ADD THIS BUTTON HERE */}
+            <button
+              onClick={() => navigate("/my-bookings")}
+              className="bg-border text-gray-300 px-3 py-1 rounded-lg text-sm hover:bg-primary/20 transition-all"
+            >
+              📋 My Bookings
+            </button>
+
+            <button
+              onClick={() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.href = "/login";
+              }}
+              className="bg-border text-gray-300 px-3 py-1 rounded-lg text-sm hover:bg-red-500/20 hover:text-red-400 transition-all"
+            >
+              Logout
+            </button>
+          </div>
         </div>
-      </div>
 
       {/* Google Map — LoadScript removed, now lives in App.jsx */}
       <GoogleMap
@@ -136,32 +149,74 @@ export default function Map() {
         {/* Info popup when host pin is clicked */}
         {selectedHost && (
           <InfoWindow
-            position={{
-              lat: selectedHost.location.coordinates[1],
-              lng: selectedHost.location.coordinates[0],
-            }}
-            onCloseClick={() => setSelectedHost(null)}
-          >
-            <div style={{ color: "#000", minWidth: "200px" }}>
-              <h3 style={{ fontWeight: "bold", fontSize: "16px", marginBottom: "8px" }}>
-                ⚡ {selectedHost.shopName}
-              </h3>
-              <p>🔌 Socket: {selectedHost.socketType}</p>
-              <p>💰 ₹{selectedHost.pricePerHour}/hour</p>
-              <p>📍 {selectedHost.address}</p>
-              <p>📏 {calculateDistance(
-                userLocation.lat,
-                userLocation.lng,
-                selectedHost.location.coordinates[1],
-                selectedHost.location.coordinates[0]
-              )} km away</p>
-              <p style={{ color: selectedHost.isAvailable ? "green" : "red", fontWeight: "bold" }}>
-                {selectedHost.isAvailable ? "✅ Available" : "❌ Busy"}
-              </p>
-            </div>
-          </InfoWindow>
+          position={{
+            lat: selectedHost.location.coordinates[1],
+            lng: selectedHost.location.coordinates[0],
+          }}
+          onCloseClick={() => setSelectedHost(null)}
+        >
+          <div style={{ color: "#000", minWidth: "200px" }}>
+            <h3 style={{ fontWeight: "bold", fontSize: "16px", marginBottom: "8px" }}>
+              ⚡ {selectedHost.shopName}
+            </h3>
+            <p>🔌 Socket: {selectedHost.socketType}</p>
+            <p>💰 ₹{selectedHost.pricePerHour}/hour</p>
+            <p>📍 {selectedHost.address}</p>
+            <p>📏 {calculateDistance(
+              userLocation.lat,
+              userLocation.lng,
+              selectedHost.location.coordinates[1],
+              selectedHost.location.coordinates[0]
+            )} km away</p>
+            <p style={{ color: selectedHost.isAvailable ? "green" : "red", fontWeight: "bold" }}>
+              {selectedHost.isAvailable ? "✅ Available" : "❌ Busy"}
+            </p>
+            {/* Book Now button */}
+            <button
+              onClick={() => {
+                setBookingHost(selectedHost);
+                setSelectedHost(null);
+              }}
+              style={{
+                marginTop: "10px",
+                width: "100%",
+                background: "#00D4FF",
+                color: "#0A0E1A",
+                border: "none",
+                borderRadius: "8px",
+                padding: "8px",
+                fontWeight: "bold",
+                cursor: "pointer"
+              }}
+            >
+              ⚡ Book Now
+            </button>
+          </div>
+        </InfoWindow>
         )}
       </GoogleMap>
+
+      {/* Booking success message */}
+      {bookingSuccess && (
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-secondary text-dark px-6 py-3 rounded-xl font-bold z-20 shadow-lg">
+          ✅ Booking Confirmed! Check My Bookings.
+        </div>
+      )}
+
+      {/* Booking modal */}
+      {bookingHost && (
+        <BookingModal
+          host={bookingHost}
+          userLocation={userLocation}
+          onClose={() => setBookingHost(null)}
+          onSuccess={() => {
+            setBookingHost(null);
+            setBookingSuccess(true);
+            setTimeout(() => setBookingSuccess(false), 4000);
+            // ☝️ Show success message for 4 seconds then hide
+          }}
+        />
+      )}
     </div>
   );
 }

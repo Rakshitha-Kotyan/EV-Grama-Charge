@@ -21,6 +21,9 @@ export default function HostDashboard() {
   const [message, setMessage] = useState("");
   const [pinLocation, setPinLocation] = useState(null);
   const [searchBox, setSearchBox] = useState(null);
+  const [myBookings, setMyBookings] = useState([]);
+  const [newBookings, setNewBookings] = useState(0);
+// ☝️ newBookings = count of unread bookings for the badge
 
   const [form, setForm] = useState({
     shopName: "",
@@ -46,6 +49,25 @@ export default function HostDashboard() {
     };
     fetchHostData();
   }, []);
+
+  // Fetch bookings for this host
+useEffect(() => {
+  const fetchBookings = async () => {
+    if (!hostData) return;
+    try {
+      const res = await api.get(`/bookings/host/${hostData._id}`);
+      setMyBookings(res.data);
+      // Count confirmed bookings from today onwards
+      const fresh = res.data.filter(b => b.status === 'confirmed');
+      setNewBookings(fresh.length);
+      // ☝️ Show badge with count of confirmed bookings
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  fetchBookings();
+}, [hostData]);
+// ☝️ Runs whenever hostData changes — so after listing is loaded
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -129,7 +151,16 @@ export default function HostDashboard() {
 
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-primary">⚡ Host Dashboard</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-primary">⚡ Host Dashboard</h1>
+          {/* Notification badge */}
+          {newBookings > 0 && (
+            <span className="bg-secondary text-dark text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+              {newBookings} new booking{newBookings > 1 ? "s" : ""}!
+            </span>
+          )}
+          {/* ☝️ animate-pulse makes it pulse to grab attention */}
+        </div>
         <div className="flex gap-3">
           <button
             onClick={() => {
@@ -206,6 +237,71 @@ export default function HostDashboard() {
                 }`} />
               </button>
             </div>
+          </div>
+          {/* Incoming Bookings */}
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <h2 className="text-xl font-bold mb-4">
+              📋 Incoming Bookings
+              {newBookings > 0 && (
+                <span className="ml-2 bg-secondary text-dark text-xs font-bold px-2 py-1 rounded-full">
+                  {newBookings}
+                </span>
+              )}
+            </h2>
+
+            {myBookings.length === 0 ? (
+              <p className="text-gray-400 text-sm">No bookings yet — toggle ON to start accepting!</p>
+            ) : (
+              <div className="space-y-3">
+                {myBookings.map(booking => (
+                  <div
+                    key={booking._id}
+                    className="bg-dark rounded-xl p-4 border border-border"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <p className="font-semibold">
+                          👤 {booking.rider?.name || "Rider"}
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          {booking.rider?.email}
+                        </p>
+                      </div>
+                      <span className="text-secondary font-bold text-sm">
+                        ₹{booking.totalPrice}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 mt-2">
+                      <div className="text-center">
+                        <p className="text-gray-400 text-xs">Date</p>
+                        <p className="text-white text-sm font-semibold">
+                          {new Date(booking.date).toLocaleDateString("en-IN")}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-gray-400 text-xs">Time</p>
+                        <p className="text-white text-sm font-semibold">{booking.startTime}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-gray-400 text-xs">Duration</p>
+                        <p className="text-white text-sm font-semibold">{booking.durationHours} hr</p>
+                      </div>
+                    </div>
+                    <div className="mt-2 flex justify-between items-center">
+                      <span className={`text-xs font-bold ${
+                        booking.status === 'confirmed' ? 'text-secondary' :
+                        booking.status === 'cancelled' ? 'text-red-400' : 'text-blue-400'
+                      }`}>
+                        {booking.status.toUpperCase()}
+                      </span>
+                      <p className="text-gray-500 text-xs">
+                        🔌 {booking.durationHours} hr slot
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
         </div>
