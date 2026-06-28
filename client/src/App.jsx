@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Map from "./pages/Map";
 import HostDashboard from "./pages/HostDashboard";
 import MyBookings from "./pages/MyBookings";
+import Landing from "./pages/Landing";
 
 
 const PrivateRoute = ({ children }) => {
@@ -20,7 +21,7 @@ export default function App() {
         libraries={["places"]}
       >
         <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/map" element={
