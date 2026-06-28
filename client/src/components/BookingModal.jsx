@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../utils/api";
+import RangeCalculator from "./RangeCalculator";
 
 export default function BookingModal({ host, userLocation, onClose, onSuccess }) {
   // host = the selected host data passed from Map page
@@ -11,6 +12,7 @@ export default function BookingModal({ host, userLocation, onClose, onSuccess })
   const [duration, setDuration] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showCalculator, setShowCalculator] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
   // ☝️ Get logged in rider's info
@@ -113,6 +115,15 @@ export default function BookingModal({ host, userLocation, onClose, onSuccess })
           </div>
         </div>
 
+
+        {/* Range Calculator trigger button */}
+          <button
+            onClick={() => setShowCalculator(true)}
+            className="w-full bg-secondary/10 border border-secondary text-secondary font-semibold py-2 rounded-lg mb-4 hover:bg-secondary/20 transition-all"
+          >
+            🔋 Calculate My Range
+          </button>
+
         {/* Booking form */}
         <div className="space-y-4">
 
@@ -201,6 +212,12 @@ export default function BookingModal({ host, userLocation, onClose, onSuccess })
 
         </div>
       </div>
+      {showCalculator && (
+        <RangeCalculator
+          socketType={host.socketType}
+          onClose={() => setShowCalculator(false)}
+        />
+      )}
     </div>
   );
 }
