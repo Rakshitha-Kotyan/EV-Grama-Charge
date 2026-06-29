@@ -151,23 +151,17 @@ export default function Landing() {
       >
         <div className="flex items-center gap-2">
           <span className="text-2xl flicker">⚡</span>
-          <h1 className="text-xl font-bold tracking-widest text-primary"
+          <h1 className="text-lg font-bold tracking-widest text-primary hidden sm:block"
             style={{ letterSpacing: "0.15em" }}
           >
             EV-GRAMA
           </h1>
         </div>
         <div className="flex gap-3">
-          <button
-            onClick={() => navigate("/login")}
-            className="glass-btn text-primary font-semibold px-6 py-2 rounded-lg text-sm tracking-wide"
-          >
+          <button className="glass-btn text-primary font-semibold px-3 py-2 rounded-lg text-xs tracking-wide sm:px-6 sm:text-sm">
             LOGIN
           </button>
-          <button
-            onClick={() => navigate("/register")}
-            className="glass-btn-green text-secondary font-semibold px-6 py-2 rounded-lg text-sm tracking-wide"
-          >
+          <button className="glass-btn-green text-secondary font-semibold px-3 py-2 rounded-lg text-xs tracking-wide sm:px-6 sm:text-sm">
             GET STARTED
           </button>
         </div>
@@ -250,18 +244,19 @@ export default function Landing() {
         </div>
       </div>
 
+
       {/* Stats Section */}
-      <div className="relative z-10 px-8 py-16"
+      <div className="relative z-10 px-4 py-16"
         style={{ borderTop: "1px solid rgba(0,212,255,0.1)", borderBottom: "1px solid rgba(0,212,255,0.1)" }}
       >
-        <div className="max-w-4xl mx-auto grid grid-cols-3 gap-8 text-center">
+        <div className="max-w-4xl mx-auto grid grid-cols-3 gap-2 text-center">
           {[
-            { value: `${count.hosts}+`, label: "CHARGING HOSTS", color: "#00D4FF" },
-            { value: `${count.riders}+`, label: "EV RIDERS", color: "#00FF88" },
-            { value: `${count.km.toLocaleString()}+`, label: "KM ENABLED", color: "#00D4FF" },
+            { value: `${count.hosts}+`, label: "HOSTS", color: "#00D4FF" },
+            { value: `${count.riders}+`, label: "RIDERS", color: "#00FF88" },
+            { value: `${count.km.toLocaleString()}+`, label: "KM", color: "#00D4FF" },
           ].map((stat, i) => (
             <div key={i}>
-              <p className="text-4xl font-black mb-2" style={{ color: stat.color }}>
+              <p className="text-2xl sm:text-4xl font-black mb-2" style={{ color: stat.color }}>
                 {stat.value}
               </p>
               <p className="text-xs tracking-widest text-gray-500">{stat.label}</p>
