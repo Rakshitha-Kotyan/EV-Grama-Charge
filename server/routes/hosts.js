@@ -77,4 +77,23 @@ router.patch('/:id/toggle', async (req, res) => {
   }
 });
 
+
+
+// PATCH — update host details
+router.patch('/:id', async (req, res) => {
+  try {
+    const host = await Host.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body },
+      { new: true }
+    );
+    if (!host) {
+      return res.status(404).json({ message: 'Host not found' });
+    }
+    res.json({ message: 'Host updated ✅', host });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
 module.exports = router;
