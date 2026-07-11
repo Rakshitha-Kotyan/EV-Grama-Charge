@@ -158,10 +158,10 @@ export default function Landing() {
           </h1>
         </div>
         <div className="flex gap-3">
-          <button className="glass-btn text-primary font-semibold px-3 py-2 rounded-lg text-xs tracking-wide sm:px-6 sm:text-sm">
+          <button className="glass-btn text-primary font-semibold px-3 py-2 rounded-lg text-xs tracking-wide sm:px-6 sm:text-sm"  onClick={() => navigate("/login")}>
             LOGIN
           </button>
-          <button className="glass-btn-green text-secondary font-semibold px-3 py-2 rounded-lg text-xs tracking-wide sm:px-6 sm:text-sm">
+          <button className="glass-btn-green text-secondary font-semibold px-3 py-2 rounded-lg text-xs tracking-wide sm:px-6 sm:text-sm"   onClick={() => navigate("/register")}>
             GET STARTED
           </button>
         </div>
