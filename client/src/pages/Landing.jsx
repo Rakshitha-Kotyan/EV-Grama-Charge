@@ -1,8 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function Landing() {
-  const navigate = useNavigate();
   const [displayText, setDisplayText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
   const [count, setCount] = useState({ hosts: 0, riders: 0, km: 0 });
@@ -10,7 +8,6 @@ export default function Landing() {
 
   const fullText = "Charge Anywhere.";
 
-  // Typewriter effect for hero text
   useEffect(() => {
     let i = 0;
     const timer = setInterval(() => {
@@ -20,13 +17,11 @@ export default function Landing() {
       } else {
         clearInterval(timer);
         setGlowPulse(true);
-        // ☝️ After typing finishes, start the glow pulse animation
       }
     }, 80);
     return () => clearInterval(timer);
   }, []);
 
-  // Blinking cursor effect
   useEffect(() => {
     const cursor = setInterval(() => {
       setShowCursor(prev => !prev);
@@ -34,7 +29,6 @@ export default function Landing() {
     return () => clearInterval(cursor);
   }, []);
 
-  // Animated counters
   useEffect(() => {
     const duration = 2000;
     const steps = 60;
@@ -65,7 +59,6 @@ export default function Landing() {
           backgroundSize: "50px 50px",
         }}
       />
-      {/* ☝️ Creates a subtle electric grid pattern across the entire background */}
 
       {/* Glow orbs */}
       <div className="fixed top-20 left-1/4 w-72 h-72 rounded-full pointer-events-none"
@@ -113,6 +106,7 @@ export default function Landing() {
           backdrop-filter: blur(10px);
           border: 1px solid rgba(0,212,255,0.3);
           transition: all 0.3s ease;
+          cursor: pointer;
         }
         .glass-btn:hover {
           background: rgba(0,212,255,0.15);
@@ -125,6 +119,7 @@ export default function Landing() {
           backdrop-filter: blur(10px);
           border: 1px solid rgba(0,255,136,0.3);
           transition: all 0.3s ease;
+          cursor: pointer;
         }
         .glass-btn-green:hover {
           background: rgba(0,255,136,0.15);
@@ -158,10 +153,17 @@ export default function Landing() {
           </h1>
         </div>
         <div className="flex gap-3">
-          <button className="glass-btn text-primary font-semibold px-3 py-2 rounded-lg text-xs tracking-wide sm:px-6 sm:text-sm">
+          {/* ☝️ onClick added with window.location.href — always works */}
+          <button
+            onClick={() => window.location.href = "/login"}
+            className="glass-btn text-primary font-semibold px-3 py-2 rounded-lg text-xs tracking-wide sm:px-6 sm:text-sm"
+          >
             LOGIN
           </button>
-          <button className="glass-btn-green text-secondary font-semibold px-3 py-2 rounded-lg text-xs tracking-wide sm:px-6 sm:text-sm">
+          <button
+            onClick={() => window.location.href = "/register"}
+            className="glass-btn-green text-secondary font-semibold px-3 py-2 rounded-lg text-xs tracking-wide sm:px-6 sm:text-sm"
+          >
             GET STARTED
           </button>
         </div>
@@ -211,7 +213,6 @@ export default function Landing() {
               WebkitTextFillColor: "#00D4FF",
             }}>|</span>
           </h1>
-          {/* ☝️ Gradient text with typewriter cursor that blinks */}
         </div>
 
         <p className="animate-slide-up-delay text-gray-400 text-lg max-w-xl mx-auto mb-12 leading-relaxed">
@@ -221,13 +222,13 @@ export default function Landing() {
         {/* CTA Buttons */}
         <div className="animate-slide-up-delay-2 flex gap-4 flex-wrap justify-center">
           <button
-            onClick={() => navigate("/register")}
+            onClick={() => window.location.href = "/register"}
             className="glass-btn text-primary font-bold px-8 py-4 rounded-xl text-base tracking-wide"
           >
             ⚡ FIND CHARGING POINTS
           </button>
           <button
-            onClick={() => navigate("/register")}
+            onClick={() => window.location.href = "/register"}
             className="glass-btn-green text-secondary font-bold px-8 py-4 rounded-xl text-base tracking-wide"
           >
             🏪 LIST MY SOCKET
@@ -243,7 +244,6 @@ export default function Landing() {
           />
         </div>
       </div>
-
 
       {/* Stats Section */}
       <div className="relative z-10 px-4 py-16"
@@ -269,7 +269,6 @@ export default function Landing() {
       <div className="relative z-10 px-8 py-24 max-w-5xl mx-auto">
         <p className="text-center text-xs tracking-widest text-primary mb-3">◆ HOW IT WORKS ◆</p>
         <h2 className="text-3xl font-bold text-center mb-16">Three steps to charge anywhere</h2>
-
         <div className="grid md:grid-cols-3 gap-6">
           {[
             { icon: "🗺️", step: "01", title: "Find a Host", desc: "Open the live map and see nearby charging points with real-time availability status." },
@@ -337,7 +336,7 @@ export default function Landing() {
           </h2>
           <p className="text-gray-400 mb-8">Join thousands of riders and hosts building India's community charging network.</p>
           <button
-            onClick={() => navigate("/register")}
+            onClick={() => window.location.href = "/register"}
             className="glass-btn text-primary font-bold px-10 py-4 rounded-xl text-base tracking-widest"
           >
             ⚡ GET STARTED FREE
