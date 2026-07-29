@@ -7,7 +7,6 @@ A community EV charging network for rural India. Local shop owners can list thei
 ## Live Demo
 
 - Demo: https://ev-grama-charge.vercel.app/
-- GitHub: https://github.com/Rakshitha-Kotyan/EV-Grama-Charge
 
 ---
 
